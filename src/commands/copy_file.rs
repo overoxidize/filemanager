@@ -1,10 +1,7 @@
-use simple_error::SimpleError;
-use std::boxed::Box;
-use std::io::{copy, Error, ErrorKind};
-use std::io::{prelude::*, BufReader};
+use std::io::{Error, ErrorKind};
+use std::io::prelude::*;
 use std::path::PathBuf;
 use std::{fs, fs::File};
-use walkdir::{DirEntry, WalkDir};
 
 pub fn cpy_file(
     src_dir: PathBuf,

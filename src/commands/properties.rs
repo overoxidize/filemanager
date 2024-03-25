@@ -1,4 +1,4 @@
-use std::{fs::File, path::PathBuf, fmt, time::SystemTime};
+use std::{path::PathBuf, fmt};
 use file_format::{FileFormat, Kind};
 
 
