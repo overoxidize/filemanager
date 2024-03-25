@@ -123,7 +123,7 @@ fn main() -> io::Result<()> {
                 fs::File::create(dir_path)?;
             }
             println!("File created successfully.");
-        } 
+        }
         Command::Delete {
             ref file_path,
             ref directory,
@@ -168,11 +168,11 @@ fn main() -> io::Result<()> {
                 file_name,
             )
             .ok();
- 
         }
-        Command::Properties { ref file_name, ref directory} => {
-            
-        }
+        Command::Properties {
+            ref file_name,
+            ref directory,
+        } => {}
         _ => println!("Not done yet"),
     }
 
