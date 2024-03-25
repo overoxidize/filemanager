@@ -75,6 +75,37 @@ file_management_cli properties <FILE>
 * `-h`, `--help`: Print help information
 * `-V`, `--version`: Print version information
 
+## Roadmap
+
+* Creating directories
+* Deleting directories
+* Listing files in a directory
+* Listing sub-directories of a directory
+
+### Creating Directories
+
+* Implement a command for creating directories
+* Allow creating multiple directories at once
+* Validate directory creation
+
+### Deleting Directories
+
+* Implement a command for deleting directories
+* Allow deleting multiple directories at once
+* Validate directory deletion
+
+### Listing Files in a Directory
+
+* Implement a command for listing files in a directory
+* Allow listing files recursively
+* Allow filtering by file type
+
+### Listing Sub-Directories of a Directory
+
+* Implement a command for listing sub-directories of a directory
+* Allow listing sub-directories recursively
+* Allow filtering by directory depth
+
 ## Built With
 
 * [clap](https://github.com/clap-rs/clap) - Command Line Argument Parser.
