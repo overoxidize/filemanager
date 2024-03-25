@@ -1,20 +1,16 @@
 mod commands;
-mod utilities;
 extern crate walkdir;
-use chrono::DateTime;
 use clap::{Parser, Subcommand};
 use commands::copy_file::cpy_file;
 use commands::delete_file::del_file;
 use commands::move_file::mv_file;
-use commands::rename_file::rn_file;
 use commands::properties::file_prop;
+use commands::rename_file::rn_file;
 use std::{
-    ffi::OsStr,
     fs::{self},
     io,
-    path::{Path, PathBuf},
+    path::PathBuf,
 };
-use walkdir::{DirEntry, WalkDir};
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -99,11 +95,7 @@ enum Command {
 fn main() -> io::Result<()> {
     let cli = Cli::parse();
     match cli.command {
-        Command::Rename {
-            old_name,
-            new_name,
-        } => {
-
+        Command::Rename { old_name, new_name } => {
             rn_file(old_name, new_name)?;
         }
         Command::Create {
@@ -167,16 +159,15 @@ fn main() -> io::Result<()> {
                     std::io::ErrorKind::Other => {
                         println!("Error: {}", e);
                     }
-                    _ => {println!("Unknown Error");}
+                    _ => {
+                        println!("Unknown Error");
+                    }
                 }
             } else {
                 return Ok(());
             }
-            
         }
-        Command::Properties {
-            ref file_name,
-        } => {
+        Command::Properties { ref file_name } => {
             file_prop(file_name.to_owned())?;
         }
         _ => println!("Not done yet"),
@@ -185,4 +176,3 @@ fn main() -> io::Result<()> {
     // dbg!(&cli);
     Ok(())
 }
-

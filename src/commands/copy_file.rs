@@ -1,14 +1,15 @@
-use std::io::{Error, ErrorKind};
 use std::io::prelude::*;
+use std::io::{Error, ErrorKind};
 use std::path::PathBuf;
 use std::{fs, fs::File};
+use walkdir::WalkDir;
 
 pub fn cpy_file(
     src_dir: PathBuf,
     mut target_dir: PathBuf,
     src_file_name: &Option<PathBuf>,
 ) -> Result<(), Error> {
-  let mut buf = Vec::new();
+    let mut buf = Vec::new();
     if src_dir.is_file() {
         //  Open the file to be copied
         let mut src_file = File::open(&src_dir)?;
@@ -30,8 +31,6 @@ pub fn cpy_file(
         let err = Error::new(ErrorKind::Other, "`file_name` is required when `source-path` is a directory, in order to search the directory for the file.");
         eprintln!("Unable to complete copy operation: {err}");
         std::process::exit(1);
-    } else {
-        ()
     }
 
     let src_name = src_file_name.clone().unwrap();
@@ -44,17 +43,13 @@ pub fn cpy_file(
     buf.flush()?;
 
     while !exists_in_dir {
-      let dir_entry = walk_dir
-        .next()
-        .unwrap()?
-        .path()
-        .to_owned();
+        let dir_entry = walk_dir.next().unwrap()?.path().to_owned();
 
-      if dir_entry == src_name {
-        println!("File match {:?} : {:?}", dir_entry, src_name);
-        full_path = dir_entry;
-        exists_in_dir = true;
-      }
+        if dir_entry == src_name {
+            println!("File match {:?} : {:?}", dir_entry, src_name);
+            full_path = dir_entry;
+            exists_in_dir = true;
+        }
     }
 
     let mut cpy_file = File::open(&full_path)?;
@@ -64,6 +59,4 @@ pub fn cpy_file(
 
     fs::write(target_dir, buf)?;
     Ok(())
- 
-
 }

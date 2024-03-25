@@ -15,7 +15,6 @@ pub fn del_file(file_path: PathBuf, directory: PathBuf) -> std::io::Result<()> {
     }
     match Some(directory) {
         Some(directory) => {
-            let target_dir = PathBuf::from(directory);
             let target_file = match Some(&file_path) {
                 Some(file_path) => file_path,
                 None => {
@@ -24,11 +23,9 @@ pub fn del_file(file_path: PathBuf, directory: PathBuf) -> std::io::Result<()> {
             };
 
             let cur_dir = std::env::current_dir()?;
-            if cur_dir == target_dir {
+            if cur_dir == directory {
                 let _ = fs::remove_file(target_file);
             }
-
-            let cur_dir = std::env::set_current_dir(target_dir.clone().strip_prefix("/").unwrap());
 
             let _ = fs::remove_file(file_path);
         }
