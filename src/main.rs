@@ -6,6 +6,8 @@ use clap::{Parser, Subcommand};
 use commands::copy_file::cpy_file;
 use commands::delete_file::del_file;
 use commands::move_file::mv_file;
+use commands::rename_file::rn_file;
+use commands::properties::file_prop;
 use std::{
     ffi::OsStr,
     fs::{self},
@@ -28,8 +30,6 @@ enum Command {
         old_name: PathBuf,
         #[clap(value_parser)]
         new_name: PathBuf,
-        #[arg(value_parser, short, long)]
-        is_dir: bool,
     },
     #[clap(about = "Create a new file")]
     Create {
@@ -64,9 +64,7 @@ enum Command {
     #[clap(about = "Get file properties")]
     Properties {
         #[clap(value_parser)]
-        file_name: String,
-        #[clap(short, long, value_parser)]
-        directory: Option<String>,
+        file_name: PathBuf,
     },
     #[clap(about = "Create a new directory")]
     CreateDirectory {
@@ -101,22 +99,12 @@ enum Command {
 fn main() -> io::Result<()> {
     let cli = Cli::parse();
     match cli.command {
-        // Possible errors
-        // Path is absolute,
         Command::Rename {
-            ref old_name,
-            ref new_name,
-            ref is_dir,
+            old_name,
+            new_name,
         } => {
 
-            if *is_dir {
-                println!("Dir flag hit");
-            }
-            let old_name = &mut old_name.clone();
-            let file_path = old_name.file_name().unwrap();
-            let old_file_name = Path::new(file_path);
-            fs::rename(old_file_name, new_name)?;
-            println!("File renamed successfully.");
+            rn_file(old_name, new_name)?;
         }
         Command::Create {
             ref file_name,
@@ -170,32 +158,31 @@ fn main() -> io::Result<()> {
             ref destination_path,
             ref file_name,
         } => {
-            cpy_file(
+            if let Err(e) = cpy_file(
                 source_path.to_owned(),
                 destination_path.to_owned(),
                 file_name,
-            )
-            .ok();
+            ) {
+                match e.kind() {
+                    std::io::ErrorKind::Other => {
+                        println!("Error: {}", e);
+                    }
+                    _ => {println!("Unknown Error");}
+                }
+            } else {
+                return Ok(());
+            }
+            
         }
         Command::Properties {
             ref file_name,
-            ref directory,
-        } => {}
+        } => {
+            file_prop(file_name.to_owned())?;
+        }
         _ => println!("Not done yet"),
     }
 
     // dbg!(&cli);
     Ok(())
-}
-
-fn in_dir(entry: &DirEntry, file_name: PathBuf) -> bool {
-    let entry_file_name = entry
-        .file_name()
-        .to_ascii_lowercase()
-        .to_str()
-        .unwrap()
-        .to_owned();
-
-    PathBuf::from(entry_file_name) == file_name
 }
 

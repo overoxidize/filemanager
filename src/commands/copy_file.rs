@@ -5,7 +5,7 @@ use std::io::{prelude::*, BufReader};
 use std::path::PathBuf;
 use std::{fs, fs::File};
 use walkdir::{DirEntry, WalkDir};
-use crate::utilities::in_dir;
+
 pub fn cpy_file(
     src_dir: PathBuf,
     mut target_dir: PathBuf,
@@ -53,9 +53,9 @@ pub fn cpy_file(
         .path()
         .to_owned();
 
-      if in_dir(&dir_entry, src_name.clone()) {
-        println!("File match {:?} : {:?}", PathBuf::from(dir_entry.file_name()), src_name);
-        full_path = dir_entry.path().to_path_buf();
+      if dir_entry == src_name {
+        println!("File match {:?} : {:?}", dir_entry, src_name);
+        full_path = dir_entry;
         exists_in_dir = true;
       }
     }
