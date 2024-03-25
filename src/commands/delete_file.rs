@@ -1,7 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
 pub fn del_file(file_path: PathBuf, directory: PathBuf) -> std::io::Result<()> {
-    // let dir_path = directory
     if !file_path.exists() {
         return Err(std::io::Error::new(
             std::io::ErrorKind::NotFound,

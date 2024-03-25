@@ -1,4 +1,5 @@
 mod commands;
+mod utilities;
 extern crate walkdir;
 use chrono::DateTime;
 use clap::{Parser, Subcommand};
@@ -27,6 +28,8 @@ enum Command {
         old_name: PathBuf,
         #[clap(value_parser)]
         new_name: PathBuf,
+        #[arg(value_parser, short, long)]
+        is_dir: bool,
     },
     #[clap(about = "Create a new file")]
     Create {
@@ -103,7 +106,12 @@ fn main() -> io::Result<()> {
         Command::Rename {
             ref old_name,
             ref new_name,
+            ref is_dir,
         } => {
+
+            if *is_dir {
+                println!("Dir flag hit");
+            }
             let old_name = &mut old_name.clone();
             let file_path = old_name.file_name().unwrap();
             let old_file_name = Path::new(file_path);
