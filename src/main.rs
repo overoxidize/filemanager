@@ -6,6 +6,7 @@ use commands::delete_file::del_file;
 use commands::move_file::mv_file;
 use commands::properties::file_prop;
 use commands::rename_file::rn_file;
+use commands::create_directory::create_dir;
 use std::{
     fs::{self},
     io,
@@ -65,9 +66,9 @@ enum Command {
     #[clap(about = "Create a new directory")]
     CreateDirectory {
         #[clap(value_parser)]
-        directory_name: String,
+        directory_name: PathBuf,
         #[clap(short, long, value_parser)]
-        parent_directory: Option<String>,
+        parent_directory: Option<PathBuf>,
     },
     #[clap(about = "Rename a directory")]
     RenameDirectory {
@@ -169,6 +170,20 @@ fn main() -> io::Result<()> {
         }
         Command::Properties { ref file_name } => {
             file_prop(file_name.to_owned())?;
+        }
+        Command::CreateDirectory { directory_name, parent_directory } => {
+            if let Err(e) = create_dir(directory_name, parent_directory) {
+                match e.kind() {
+                    std::io::ErrorKind::Other => {
+                        println!("Error: {}", e);
+                    }
+                    _ => {
+                        println!("Unknown Error");
+                    }
+                }
+            } else {
+                return Ok(());
+            }
         }
         _ => println!("Not done yet"),
     }
